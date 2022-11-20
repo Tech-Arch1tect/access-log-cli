@@ -1,0 +1,4 @@
+github.com/BurntSushi/toml v1.2.1 h1:9F2/+DoOYIOksmaJFPw1tGFy1eDnIJXg+UHjuD8lTak=
+github.com/BurntSushi/toml v1.2.1/go.mod h1:CxXYINrC8qIiEnFrOxCa7Jy5BFHlXnUU2pbicEuybxQ=
+github.com/Tech-Arch1tect/access-log-stats v0.1.0 h1:dXnYxVyyASMq7aXnmeEQsO/FQAIFp3keuHv+n7JvNM8=
+github.com/Tech-Arch1tect/access-log-stats v0.1.0/go.mod h1:Vn2Kdbozg8kOXfRCAlHwH6qhX59vOjtB+Ysz8ihfVW8=

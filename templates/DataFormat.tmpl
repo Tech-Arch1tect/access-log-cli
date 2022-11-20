@@ -1,0 +1,74 @@
+<script>
+function ChangeChart(chart, type) {
+  chart.config.type = type;
+  chart.update();
+}
+function getAMorPM(hours) {
+  if(hours >= 12) {
+    return "PM";
+  } else {
+    return "AM"
+  }
+}
+function isLimited(i, l) {
+  // iteration is smaller than limit, not limited
+  if (i < l) {
+    return false;
+  }
+  // if limit is 0, treat as never limited
+  if (l == 0) {
+    return false;
+  }
+  // anything else is limited
+  return true;
+}
+function formatJsonToChartData(jsonObj, arr, limit, date, table) {
+  var i = 0
+  for(const key in jsonObj) {
+    if (typeof jsonObj[key].Key != "undefined") {
+      if (!isLimited(i, limit)) {
+        arr.push({
+          x: jsonObj[key].Key,
+          y: jsonObj[key].Value
+        }); 
+      }
+      addKVToTable(jsonObj[key].Key, jsonObj[key].Value, table);
+    } else {
+      if (date == true) {keyVal = key*1000;} else {keyVal = key;}
+      if (!isLimited(i, limit)) {
+        arr.push({
+          x: keyVal,
+          y: jsonObj[key]
+        });
+      }
+      if (date == true) {
+        var dateTime = new Date(keyVal);
+        addKVToTable(dateTime.toDateString(), jsonObj[key], table);
+      } else {
+        addKVToTable(keyVal, jsonObj[key], table);
+      }
+    }
+    i++;
+  }
+}
+function formatByHourJsonToChartData(jsonObj, arr, limit, date, table) {
+  for(const key in jsonObj) {
+    for(const time in jsonObj[key]) {
+      arr.push({
+        x: time*1000,
+        y: jsonObj[key][time]
+      });
+      var dateTime = new Date(time*1000);
+      addKVToTable(dateTime.toDateString() + " - " + dateTime.getHours()+" "+getAMorPM(dateTime.getHours()), jsonObj[key][time], table);
+    }
+  }
+}
+function addKVToTable(k, v, table) {
+  $(table+' > tbody:last-child').append('<tr><td>'+k+'</td><td>'+v+'</td></tr>');
+}
+var json = {{.Json}};
+{{ range $key, $value := .Graphs }}
+      var {{ index $value "Name" }}Arr = [];
+      format{{ if eq (index $value "Name") "ByHour" }}ByHour{{end}}JsonToChartData(json.{{ index $value "Name" }}, {{ index $value "Name" }}Arr, {{ index $value "Limit" }}, {{ if eq (index $value "Name") "Date" }}true{{else}}false{{end}}, "#{{ index $value "Name" }}Table");
+{{ end }}
+</script>
